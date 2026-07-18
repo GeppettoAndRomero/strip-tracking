@@ -1,0 +1,13 @@
+# robots.txt — runlocally / strip-tracking (served on the *.pages.dev origin)
+User-agent: *
+Allow: /
+
+# Backlink scrapers (noise, not search engines)
+User-agent: AhrefsBot
+Disallow: /
+User-agent: SemrushBot
+Disallow: /
+User-agent: MJ12bot
+Disallow: /
+
+Sitemap: https://runlocally.app/strip-tracking/sitemap.xml

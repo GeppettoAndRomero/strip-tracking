@@ -1,0 +1,41 @@
+## セキュリティヘッダー設定
+## Cloudflare Pages用
+
+/*
+  # セキュリティヘッダー
+  X-Frame-Options: DENY
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
+  Permissions-Policy: camera=(), microphone=(), geolocation=(), interest-cohort=()
+
+  # Content Security Policy
+  # No Web Worker, no Blob, no WASM here — this tool only parses text with the
+  # built-in URL API. connect-src is 'self' only: nothing this page does ever
+  # needs to reach another origin.
+  Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self' data:; connect-src 'self'; manifest-src 'self'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'
+
+# ハッシュ付きバンドルだけ immutable にする。
+# 注意: Cloudflare の _headers は同一ヘッダ名を「結合」するため、immutable を /* に
+# 置くと HTML/SW/manifest にも乗り、再デプロイが返訪者・SW precache に伝播しなくなる。
+# 必ず content-hash 済みの /strip-tracking/_assets/ だけに限定する。
+/strip-tracking/_assets/*
+  Cache-Control: public, max-age=31536000, immutable
+
+# Service Worker: 常に revalidate（更新を確実に伝播させる）
+/strip-tracking/sw.js
+  Cache-Control: public, max-age=0, must-revalidate
+  Service-Worker-Allowed: /strip-tracking/
+
+# Manifest: 短期キャッシュ
+/strip-tracking/manifest.json
+  Cache-Control: public, max-age=3600
+
+# Post-cutover: the router strips this on runlocally.app, so only the *.pages.dev
+# origin is noindexed (apex is the sole indexable surface).
+/strip-tracking/*
+  X-Robots-Tag: noindex
+
+# Router-fronted tool: the *.pages.dev origin is noindex; the front-router strips
+# X-Robots-Tag on runlocally.app responses so the apex is the only indexed surface.
+/strip-tracking/*
+  X-Robots-Tag: noindex
