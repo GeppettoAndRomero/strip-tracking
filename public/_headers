@@ -12,7 +12,7 @@
   # No Web Worker, no Blob, no WASM here — this tool only parses text with the
   # built-in URL API. connect-src is 'self' only: nothing this page does ever
   # needs to reach another origin.
-  Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self' data:; connect-src 'self'; manifest-src 'self'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'
+  Content-Security-Policy: default-src 'self'; script-src 'self' 'sha256-WN0hqek1jEauhlhWVVXeQPa5BD3f0rsMdmwSZtw1Cys=' 'sha256-1IuZ1pdeAZ6SnK/ghkQu+LknxOILdEXQt9wm/pSUKoM='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self' data:; connect-src 'self'; manifest-src 'self'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'
 
 # ハッシュ付きバンドルだけ immutable にする。
 # 注意: Cloudflare の _headers は同一ヘッダ名を「結合」するため、immutable を /* に
@@ -32,10 +32,5 @@
 
 # Post-cutover: the router strips this on runlocally.app, so only the *.pages.dev
 # origin is noindexed (apex is the sole indexable surface).
-/strip-tracking/*
-  X-Robots-Tag: noindex
-
-# Router-fronted tool: the *.pages.dev origin is noindex; the front-router strips
-# X-Robots-Tag on runlocally.app responses so the apex is the only indexed surface.
 /strip-tracking/*
   X-Robots-Tag: noindex
